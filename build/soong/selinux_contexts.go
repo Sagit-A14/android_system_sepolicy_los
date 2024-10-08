@@ -255,7 +255,7 @@ func (m *selinuxContextsModule) ExtraImageVariations(ctx android.BaseModuleConte
 	return nil
 }
 
-func (m *selinuxContextsModule) SetImageVariation(ctx android.BaseModuleContext, variation string) {
+func (m *selinuxContextsModule) SetImageVariation(ctx android.BaseModuleContext, variation string, module android.Module) {
 }
 
 var _ android.ImageInterface = (*selinuxContextsModule)(nil)
@@ -730,7 +730,7 @@ func (m *contextsTestModule) ExtraImageVariations(ctx android.BaseModuleContext)
 	return nil
 }
 
-func (m *contextsTestModule) SetImageVariation(ctx android.BaseModuleContext, variation string) {
+func (m *contextsTestModule) SetImageVariation(ctx android.BaseModuleContext, variation string, module android.Module) {
 }
 
 var _ android.ImageInterface = (*contextsTestModule)(nil)
