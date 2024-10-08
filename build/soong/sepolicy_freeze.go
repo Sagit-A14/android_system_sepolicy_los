@@ -94,7 +94,17 @@ func (f *freezeTestModule) outputFileOfDep(ctx android.ModuleContext, depTag dep
 	}
 
 	dep := deps[0]
-	output := android.OutputFilesForModule(ctx, dep, "")
+	outputFileProducer, ok := dep.(android.OutputFileProducer)
+	if !ok {
+		ctx.ModuleErrorf("module %q is not an output file producer", dep.String())
+		return nil
+	}
+
+	output, err := outputFileProducer.OutputFiles("")
+	if err != nil {
+		ctx.ModuleErrorf("module %q failed to produce output: %w", dep.String(), err)
+		return nil
+	}
 	if len(output) != 1 {
 		ctx.ModuleErrorf("module %q produced %d outputs; expected only one output", dep.String(), len(output))
 		return nil
