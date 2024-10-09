@@ -15,6 +15,7 @@
 package selinux
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 
@@ -162,8 +163,6 @@ func (m *versionedPolicy) GenerateAndroidBuildActions(ctx android.ModuleContext)
 		m.installPath = m.installPath.Join(ctx, subdir)
 	}
 	ctx.InstallFile(m.installPath, m.installSource.Base(), m.installSource)
-
-	ctx.SetOutputFiles(android.Paths{m.installSource}, "")
 }
 
 func (m *versionedPolicy) AndroidMkEntries() []android.AndroidMkEntries {
@@ -179,3 +178,12 @@ func (m *versionedPolicy) AndroidMkEntries() []android.AndroidMkEntries {
 		},
 	}}
 }
+
+func (m *versionedPolicy) OutputFiles(tag string) (android.Paths, error) {
+	if tag == "" {
+		return android.Paths{m.installSource}, nil
+	}
+	return nil, fmt.Errorf("Unknown tag %q", tag)
+}
+
+var _ android.OutputFileProducer = (*policyConf)(nil)

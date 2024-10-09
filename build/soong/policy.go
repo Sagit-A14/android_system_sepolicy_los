@@ -15,6 +15,7 @@
 package selinux
 
 import (
+	"fmt"
 	"os"
 	"sort"
 	"strconv"
@@ -293,8 +294,6 @@ func (c *policyConf) GenerateAndroidBuildActions(ctx android.ModuleContext) {
 	c.installSource = c.transformPolicyToConf(ctx)
 	c.installPath = android.PathForModuleInstall(ctx, "etc")
 	ctx.InstallFile(c.installPath, c.stem(), c.installSource)
-
-	ctx.SetOutputFiles(android.Paths{c.installSource}, "")
 }
 
 func (c *policyConf) AndroidMkEntries() []android.AndroidMkEntries {
@@ -310,6 +309,15 @@ func (c *policyConf) AndroidMkEntries() []android.AndroidMkEntries {
 		},
 	}}
 }
+
+func (c *policyConf) OutputFiles(tag string) (android.Paths, error) {
+	if tag == "" {
+		return android.Paths{c.installSource}, nil
+	}
+	return nil, fmt.Errorf("Unknown tag %q", tag)
+}
+
+var _ android.OutputFileProducer = (*policyConf)(nil)
 
 type policyCilProperties struct {
 	// Name of the output. Default is {module_name}
@@ -449,8 +457,6 @@ func (c *policyCil) GenerateAndroidBuildActions(ctx android.ModuleContext) {
 	}
 	c.installSource = cil
 	ctx.InstallFile(c.installPath, c.stem(), c.installSource)
-
-	ctx.SetOutputFiles(android.Paths{c.installSource}, "")
 }
 
 func (c *policyCil) AndroidMkEntries() []android.AndroidMkEntries {
@@ -466,6 +472,15 @@ func (c *policyCil) AndroidMkEntries() []android.AndroidMkEntries {
 		},
 	}}
 }
+
+func (c *policyCil) OutputFiles(tag string) (android.Paths, error) {
+	if tag == "" {
+		return android.Paths{c.installSource}, nil
+	}
+	return nil, fmt.Errorf("Unknown tag %q", tag)
+}
+
+var _ android.OutputFileProducer = (*policyCil)(nil)
 
 type policyBinaryProperties struct {
 	// Name of the output. Default is {module_name}
@@ -589,8 +604,6 @@ func (c *policyBinary) GenerateAndroidBuildActions(ctx android.ModuleContext) {
 	}
 	c.installSource = out
 	ctx.InstallFile(c.installPath, c.stem(), c.installSource)
-
-	ctx.SetOutputFiles(android.Paths{c.installSource}, "")
 }
 
 func (c *policyBinary) AndroidMkEntries() []android.AndroidMkEntries {
@@ -606,3 +619,12 @@ func (c *policyBinary) AndroidMkEntries() []android.AndroidMkEntries {
 		},
 	}}
 }
+
+func (c *policyBinary) OutputFiles(tag string) (android.Paths, error) {
+	if tag == "" {
+		return android.Paths{c.installSource}, nil
+	}
+	return nil, fmt.Errorf("Unknown tag %q", tag)
+}
+
+var _ android.OutputFileProducer = (*policyBinary)(nil)
